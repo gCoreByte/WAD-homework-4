@@ -247,10 +247,6 @@ components:
     Post:
       type: object
       properties:
-        author:
-          description: Author of the created post
-          type: string
-          example: CoreByte
         body:
           description: The text contents of the post
           type: string
