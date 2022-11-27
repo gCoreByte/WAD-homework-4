@@ -1,0 +1,358 @@
+openapi: 3.0.3
+info:
+  title: Backend API
+  version: 1.0.0
+servers:
+  - url: 127.0.0.1:8000/api/v1/
+tags:
+  - name: authentication
+  - name: posts
+paths:
+  /posts/:
+    get:
+      description: Get an array of all posts
+      tags:
+        - posts
+      responses:
+        200:
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+    post:
+      description: Create a new post
+      tags:
+        - posts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  description: Contents of the post body
+                  type: string
+                  example: Look at this funny cat!
+              required:
+                - body
+      responses:
+        200:
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+    delete:
+      description: Nuke the database table of posts
+      tags:
+        - posts
+      responses:
+        200:
+          description: Successful
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /posts/{PostId}/:
+    get:
+      description: Get a post
+      tags:
+        - posts
+      parameters:
+        - $ref: '#/components/parameters/PostId'
+      responses:
+        200:
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+    patch:
+      description: Update a post
+      tags:
+        - posts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  description: Contents of the post body
+                  type: string
+                  example: Look at this funny cat!
+              required:
+                - body
+      responses:
+        200:
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+    delete:
+      description: Delete a post
+      tags:
+        - posts
+      responses:
+        204:
+          description: Successful
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+  /auth/login/:
+    post:
+      description: Login as a user
+      tags:
+        - authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  description: Email of the user
+                  type: string
+                  example: example@example.org
+                password:
+                  description: Password of the the user
+                  type: string
+                  example: password123
+              required:
+                - email
+                - password
+      responses:
+        200:
+          description: Successful
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+      security: []
+
+  /auth/signup/:
+    post:
+      description: Register a user
+      tags:
+        - authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  description: Email of the user
+                  type: string
+                  example: example@example.org
+                password:
+                  description: Password of the the user
+                  type: string
+                  example: password123
+              required:
+                - email
+                - password
+      responses:
+        200:
+          description: Successful
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+      security: []
+
+components:
+
+  parameters:
+    PostId:
+      in: path
+      required: true
+      name: id
+      schema:
+        type: string
+        format: uuid
+        example: b839defa-3983-4327-9ada-fc3df9a1c8d9
+
+  schemas:
+    Post:
+      type: object
+      properties:
+        author:
+          description: Author of the created post
+          type: string
+          example: CoreByte
+        body:
+          description: The text contents of the post
+          type: string
+          example: >-
+            Look at this funny cat!
+        created_at:
+          description: When the post was created
+          type: string
+          format: date-time
+          example: 2022-03-20T09:12:28Z
+        id:
+          description: Id of the post
+          type: string
+          format: uuid
+          example: b839defa-3983-4327-9ada-fc3df9a1c8d9
+
+
+  responses:
+
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Bad request
+              status:
+                type: integer
+                example: 400
+              errors:
+                type: array
+                items:
+                  type: string
+                  example: Field 'body' must be present
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Unauthorized
+              status:
+                type: integer
+                example: 401
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Forbidden
+              status:
+                type: integer
+                example: 403
+
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Not found
+              status:
+                type: integer
+                example: 404
+
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Internal server error
+              status:
+                type: integer
+                example: 500
+
+
+
+  securitySchemes:
+    jwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+
+security:
+  - jwt: []
