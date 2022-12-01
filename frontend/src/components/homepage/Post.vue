@@ -5,7 +5,7 @@
   </div>
   <!-- show modal -->
   <Teleport to="body">
-    <postModal :body="bodyRef" :show="showModal" @close="showModal = false" @update-value="updateValue">
+    <postModal :body="bodyRef" :show="showModal" @close="showModal = false" @update-value="updateValue" @delete="deletePost">
       <template #time>
         <div class="col-sm-13">
           <input disabled type="text" class="form-control border border-secondary" id="time" :value="formattedTime">
@@ -61,6 +61,27 @@ const updateValue = async (newValue) => {
   await router.go(0);
 }
 
+const deletePost = async () => {
+  const res = await fetch(`http://localhost:8000/posts/${props.id}`, {
+    method: 'DELETE',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  // Something is bad about the request.
+  // TODO: show user an error
+  if (res.statusCode === 400) {
+    console.log("Something went wrong.");
+    console.log(await res.json());
+  }
+  // Something went wrong, probably not authenticated. Redirect to login page.
+  if (!res.ok) {
+    await router.push('/login');
+  }
+  // Refresh the page if everything works
+  await router.go(0);
+}
 
 
 </script>

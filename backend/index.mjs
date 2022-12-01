@@ -160,12 +160,8 @@ server.get('/posts/:id', async(req, res) => {
     try {
         console.log("post with route parameter request");
         const postId = req.params['id'];
-        const post = await Post.findOne({
-            where: {
-                id: postId
-            }
-        });
-        res.json(post);
+        const targetPost = await Post.findByPk(postId);
+        res.json(targetPost);
     } catch (err) {
         console.error(err.message)
     }
@@ -181,8 +177,7 @@ server.patch('/posts/:id', async(req, res) => {
         if (targetPost === null) {
             res.status(404).json({
                 status: 404,
-                message: 'Not found',
-                errors: [`Post with id ${postId} does not exist.`]
+                message: 'Not found'
             });
         }
         await targetPost.update({ body: postBody });
@@ -195,14 +190,18 @@ server.patch('/posts/:id', async(req, res) => {
 //deletes a post based on the given id
 server.delete('/posts/:id', async(req, res) => {
     try {
-        console.log("delete a post request");
-        const { postid } = req.params;
-        await Post.destroy({
-            where: {
-                id: postid
-            }
-        });
-        res.json(200);
+        console.log("DELETE Post request");
+        const postId = req.params['id'];
+        const postBody = req.body.body;
+        const targetPost = await Post.findByPk(postId);
+        if (targetPost === null) {
+            res.status(404).json({
+                status: 404,
+                message: 'Not found'
+            });
+        }
+        await targetPost.destroy();
+        res.json(204);
     } catch (err) {
         console.error(err.message)
     }

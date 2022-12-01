@@ -3,7 +3,7 @@
     <div v-if="show" class="modal-mask">
       <div class="modal-wrapper" @click="$emit('close')">
         <div class="modal-container" @click.stop="">
-          <div class="modal-header">
+          <div class="modal-header justify-content-center">
             <h3>A post</h3>
           </div>
 
@@ -20,11 +20,16 @@
             </div>
           </div>
 
-          <div class="modal-footer">
+          <div class="modal-footer row gx-1">
               <button
-                  class="modal-default-button"
+                  class="col"
                   @click="$emit('updateValue', bodyRef)"
               >Update</button>
+            <div class="col"></div>
+            <button
+                class="col"
+                @click="$emit('delete')"
+            >Delete</button>
           </div>
         </div>
       </div>
@@ -33,7 +38,7 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+  import {ref} from "vue";
 
   const props = defineProps(
       {
@@ -43,6 +48,8 @@ import {ref} from "vue";
   );
 
   const bodyRef = ref(props.body);
+
+
 
 
 </script>
@@ -85,9 +92,6 @@ import {ref} from "vue";
   margin: 20px 0;
 }
 
-.modal-default-button {
-  float: right;
-}
 
 /*
  * The following styles are auto-applied to elements with
