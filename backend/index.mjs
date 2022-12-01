@@ -4,7 +4,7 @@ import {Sequelize, where} from "sequelize";
 // Initialize helper library
 import useBcrypt  from 'sequelize-bcrypt';
 
-export const sequelize = new Sequelize('postgres://postgres:123@localhost:5432/vagavaheteiole')
+export const sequelize = new Sequelize('postgres://wad:123@localhost:5432/vagavaheteiole')
 try {
     await sequelize.authenticate();
     console.log('Connected to database successfully!');
@@ -42,11 +42,11 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 
-const port = 8080; // Changing this also requires changing the frontend config
+const port = 8000; // Changing this also requires changing the frontend config
 const server = express();
 
 // Config
-server.use(cors( { origin: 'http://localhost:5173', credentials: true }));
+server.use(cors( { origin: '*', credentials: true }));
 server.use(express.json());
 server.use(cookieParser());
 
@@ -59,49 +59,54 @@ const generateJWT = (id) => {
     return jwt.sign( { id }, secret, { expiresIn: maxAge } );
 }
 
+// Set up the server
+server.listen(port, () => {
+    console.log(`Server is listening on port {port}.`);
+});
+
 // Routes
 
 //Login as a user
-// server.post('/posts', async(req, res) => {
-//     try {
-//         console.log("login request");
-//         const useremail = req.body.email;
-//         const user = await User.findOne({
-//             where: {
-//                 email: useremail
-//             }
-//         });
-//
-//         if (await user.authenticate(req.body.password)){
-//             const token = await generateJWT(user.id);
-//             res
-//                 .status(201)
-//                 .cookie('jwt', token, { maxAge: 6000000, httpOnly: true })
-//                 .json({ user_id: user.id })
-//                 .send;
-//         } else {
-//             console.error("Wrong password")
-//             res.status(401)
-//         }
-//     } catch (err) {
-//         console.error(err.message)
-//     }
-// });
+server.post('/auth/login/', async(req, res) => {
+    try {
+        console.log("login request");
+        const useremail = req.body.email;
+        const user = await User.findOne({
+            where: {
+                email: useremail
+            }
+        });
+
+        if (await user.authenticate(req.body.password)){
+            const token = await generateJWT(user.id);
+            res
+                .status(201)
+                .cookie('jwt', token, { maxAge: 6000000, httpOnly: true })
+                .json({ user_id: user.id })
+                .send;
+        } else {
+            console.error("Wrong password")
+            res.status(401)
+        }
+    } catch (err) {
+        console.error(err.message)
+    }
+});
 
 //Register a user
-// server.post('/posts', async(req, res) => {
-//     try {
-//         const e = req.body.email;
-//         const pw = req.body.password;
-//         await User.create({email: e, password: pw})
-//         res.send(200);
-//     } catch (err) {
-//         console.error(err.message)
-//     }
-// });
+server.post('/auth/signup/', async(req, res) => {
+    try {
+        const e = req.body.email;
+        const pw = req.body.password;
+        await User.create({email: e, password: pw})
+        res.json(200);
+    } catch (err) {
+        console.error(err.message)
+    }
+});
 
 //creates a new post
-server.post('/posts', async(req, res) => {
+server.post('/posts/', async(req, res) => {
     try {
         console.log("post request");
         const  post = req.body.body;
@@ -113,18 +118,18 @@ server.post('/posts', async(req, res) => {
 });
 
 //gets all posts
-server.get('/posts', async(req, res) => {
+server.get('/posts/', async(req, res) => {
     try {
-        console.log("get request");
+        console.log("post request");
         const posts = await Post.findAll();
-        res.send(posts);
+        res.json(posts);
     } catch (err) {
         console.error(err.message)
     }
 });
 
 //deletes all posts
-server.delete('/openapi/posts', async(req, res) => {
+server.delete('/posts/', async(req, res) => {
     try {
         console.log("delete posts request");
         await Post.destroy()
@@ -135,7 +140,7 @@ server.delete('/openapi/posts', async(req, res) => {
 });
 
 //finds a post based on the given id
-server.get('/openapi/posts/:id', async(req, res) => {
+server.get('/posts/posts/:id', async(req, res) => {
     try {
         console.log("post with route parameter request");
         const { postid } = req.params;
@@ -151,7 +156,7 @@ server.get('/openapi/posts/:id', async(req, res) => {
 });
 
 //refreshes a post
-server.patch('/openapi/posts/:id', async(req, res) => {
+server.patch('/posts/:id', async(req, res) => {
     try {
         console.log("post update request");
         const { postid } = req.params;
@@ -168,7 +173,7 @@ server.patch('/openapi/posts/:id', async(req, res) => {
 });
 
 //deletes a post based on the given id
-server.delete('/openapi/posts/:id', async(req, res) => {
+server.delete('/posts/:id', async(req, res) => {
     try {
         console.log("delete a post request");
         const { postid } = req.params;
@@ -183,7 +188,4 @@ server.delete('/openapi/posts/:id', async(req, res) => {
     }
 });
 
-// Set up the server
-server.listen(port, () => {
-    console.log(`Server is listening on port ${port}.`);
-});
+// TODO: see openapi docs
