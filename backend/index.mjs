@@ -1,20 +1,24 @@
 // Initialize sequelize, which is the ORM we are using to avoid having to write plain SQL queries
-const { Sequelize } = require('sequelize')
-// Initialize helper library
-const useBcrypt = require('sequelize-bcrypt');
+import { Sequelize } from "sequelize";
 
-const sequelize = new Sequelize('postgres://postgres:@localhost:5432/')
+// Initialize helper library
+import { useBcrypt } from 'sequelize-bcrypt';
+
+export const sequelize = new Sequelize('postgres://postgres:@localhost:5432/')
 try {
     await sequelize.authenticate();
     console.log('Connected to database successfully!');
 } catch (error) {
     console.error('Failed to connect to database: ', error);
+    process.exit(1);
 }
 
 // Initialize models
-const User = require('models/user')(sequelize);
-const Post = require('models/post')(sequelize);
+import { User, init as UserInit } from './models/user.mjs';
+import { Post, init as PostInit } from './models/post.mjs';
 
+UserInit(sequelize);
+PostInit(sequelize);
 // bcrypt helper
 useBcrypt(User);
 
@@ -33,10 +37,10 @@ await sequelize.sync({ alter: true });
 // Create the web server
 
 // Imports
-const express = require('express');
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const jwt = require('jsonwebtoken');
+import express from 'express';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import jwt from 'jsonwebtoken';
 
 const port = 8000; // Changing this also requires changing the frontend config
 const server = express();

@@ -2,9 +2,10 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "University of Tartu WAD 2022 Homework 4 backend",
-  "main": "index.js",
+  "main": "index.mjs",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "dev": "node index.mjs"
   },
   "author": "",
   "license": "ISC",

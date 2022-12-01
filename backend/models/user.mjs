@@ -1,7 +1,9 @@
-const {DataTypes} = require("sequelize");
+import { Model, DataTypes} from "sequelize";
 
-module.exports = (sequelize) => {
-    return sequelize.define("User", {
+export class User extends Model {}
+
+export function init(sequelize) {
+    User.init({
             email: {
                 type: DataTypes.STRING,
                 allowNull: false,
@@ -16,6 +18,8 @@ module.exports = (sequelize) => {
             },
         },
         {
+            sequelize,
             timestamps: false,
+            modelName: 'User'
         });
-};
+}
