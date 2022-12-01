@@ -1,8 +1,8 @@
 <template>
   <Transition name="modal">
     <div v-if="show" class="modal-mask">
-      <div class="modal-wrapper">
-        <div class="modal-container">
+      <div class="modal-wrapper" @click="$emit('close')">
+        <div class="modal-container" @click.stop="">
           <div class="modal-header">
             <h3>A post</h3>
           </div>
@@ -13,18 +13,18 @@
               <slot name="time">No time specified.</slot>
             </div>
             <div class="mt-3">
-              <label for="body" class="form-label mb-3">Body:</label>
-              <slot name="body">No body specified.</slot>
+              <label for="bodyText" class="form-label mb-3">Body:</label>
+              <div class="col-sm-13">
+                <textarea type="text" v-model="bodyRef" class="form-control text-break border border-secondary" id="bodyText"></textarea>
+              </div>
             </div>
           </div>
 
           <div class="modal-footer">
-            <slot name="footer">
               <button
                   class="modal-default-button"
-                  @click="$emit('close')"
-              >OK</button>
-            </slot>
+                  @click="$emit('updateValue', bodyRef)"
+              >Update</button>
           </div>
         </div>
       </div>
@@ -33,11 +33,18 @@
 </template>
 
 <script setup>
+import {ref} from "vue";
+
   const props = defineProps(
       {
-        show: Boolean
+        show: Boolean,
+        body: String
       }
   );
+
+  const bodyRef = ref(props.body);
+
+
 </script>
 
 <style>

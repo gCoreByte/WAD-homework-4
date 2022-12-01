@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mx-auto" style="width: 50%">
     <Post v-for="post in posts" :body="post.body" :time="post.createdAt" :id="post.id" :key="post.id"></Post>
   </div>
 </template>

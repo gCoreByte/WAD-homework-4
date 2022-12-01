@@ -1,20 +1,14 @@
 <template>
-  <div @click="showModal = true">
-    <div class="float-right">{{formattedTime}}</div>
-    <br>
-    <div class="text-justify text-center"> {{ body }}</div>
+  <div @click="showModal = true" class="post">
+    <div class="text-end text-margin">{{formattedTime}}</div>
+    <div class="text-justify text-margin"> {{ bodyRef }}</div>
   </div>
   <!-- show modal -->
   <Teleport to="body">
-    <postModal :show="showModal" @close="showModal = false">
+    <postModal :body="bodyRef" :show="showModal" @close="showModal = false" @update-value="updateValue">
       <template #time>
         <div class="col-sm-13">
           <input disabled type="text" class="form-control border border-secondary" id="time" :value="formattedTime">
-        </div>
-      </template>
-      <template #body>
-        <div class="col-sm-13">
-          <textarea type="text" class="form-control text-break border border-secondary" id="body" :value="body"></textarea>
         </div>
       </template>
     </postModal>
@@ -25,22 +19,66 @@
 <script setup>
 import {ref} from "vue";
 import PostModal from "./modals/PostModal.vue"
+import router from "../../router";
 
 const props = defineProps(
     {
-      id: String,
+      id: Number,
       time: String,
       body: String
     }
 );
 
+const bodyRef = ref(props.body);
 const showModal = ref(false);
 const formattedTime = ref('');
 
 const dateTime = new Date(props.time);
 formattedTime.value = dateTime.toLocaleString();
 
+const updateValue = async (newValue) => {
+  const res = await fetch(`http://localhost:8080/posts/${props.id}`, {
+    method: 'PATCH',
+    credentials: 'include',
+    body: JSON.stringify({
+      body: newValue
+    }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  // Something is bad about the request.
+  // TODO: show user an error
+  if (res.statusCode === 400) {
+    console.log("Something went wrong.");
+    console.log(await res.json());
+  }
+  // Something went wrong, probably not authenticated. Redirect to login page.
+  if (!res.ok) {
+    await router.push('/login');
+  }
+  // Refresh the page if everything works
+  await router.go(0);
+}
+
+
+
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+  @import "../node_modules/bootstrap/scss/bootstrap";
+
+  .post {
+    margin-top: 25px;
+    @extend .bg-dark;
+    @extend .text-light;
+    width: 50vw;
+    display: block;
+    margin-bottom: 25px;
+    border-radius: 10px;
+  }
+
+  .text-margin {
+    margin: 25px;
+  }
 </style>
