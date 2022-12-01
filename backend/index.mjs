@@ -1,10 +1,10 @@
 // Initialize sequelize, which is the ORM we are using to avoid having to write plain SQL queries
-import { Sequelize } from "sequelize";
+import {Sequelize, where} from "sequelize";
 
 // Initialize helper library
-import { useBcrypt } from 'sequelize-bcrypt';
+import useBcrypt  from 'sequelize-bcrypt';
 
-export const sequelize = new Sequelize('postgres://postgres:@localhost:5432/')
+export const sequelize = new Sequelize('postgres://wad:123@localhost:5432/vagavaheteiole')
 try {
     await sequelize.authenticate();
     console.log('Connected to database successfully!');
@@ -59,11 +59,133 @@ const generateJWT = (id) => {
     return jwt.sign( { id }, secret, { expiresIn: maxAge } );
 }
 
-// Setup the server
+// Set up the server
 server.listen(port, () => {
     console.log(`Server is listening on port {port}.`);
 });
 
 // Routes
+
+//Login as a user
+server.post('/posts', async(req, res) => {
+    try {
+        console.log("login request");
+        const useremail = req.body.email;
+        const user = await User.findOne({
+            where: {
+                email: useremail
+            }
+        });
+
+        if (await user.authenticate(req.body.password)){
+            const token = await generateJWT(user.id);
+            res
+                .status(201)
+                .cookie('jwt', token, { maxAge: 6000000, httpOnly: true })
+                .json({ user_id: user.id })
+                .send;
+        } else {
+            console.error("Wrong password")
+            res.status(401)
+        }
+    } catch (err) {
+        console.error(err.message)
+    }
+});
+
+//Register a user
+server.post('/posts', async(req, res) => {
+    try {
+        const e = req.body.email;
+        const pw = req.body.password;
+        await User.create({email: e, password: pw})
+        res.json(200);
+    } catch (err) {
+        console.error(err.message)
+    }
+});
+
+//creates a new post
+server.post('/posts', async(req, res) => {
+    try {
+        console.log("post request");
+        const  post = req.body.body;
+        const newpost = await Post.create({body: post});
+        res.json(newpost);
+    } catch (err) {
+        console.error(err.message)
+    }
+});
+
+//gets all posts
+server.get('/openapi/posts', async(req, res) => {
+    try {
+        console.log("post request");
+        const posts = await Post.findAll();
+        res.json(posts);
+    } catch (err) {
+        console.error(err.message)
+    }
+});
+
+//deletes all posts
+server.delete('/openapi/posts', async(req, res) => {
+    try {
+        console.log("delete posts request");
+        await Post.destroy()
+        res.json(200);
+    } catch (err) {
+        console.error(err.message)
+    }
+});
+
+//finds a post based on the given id
+server.get('/openapi/posts/:id', async(req, res) => {
+    try {
+        console.log("post with route parameter request");
+        const { postid } = req.params;
+        const post = await Post.findOne({
+            where: {
+                id: postid
+            }
+        });
+        res.json(post);
+    } catch (err) {
+        console.error(err.message)
+    }
+});
+
+//refreshes a post
+server.patch('/openapi/posts/:id', async(req, res) => {
+    try {
+        console.log("post update request");
+        const { postid } = req.params;
+        const post = req.body.body; //?
+        const updatedpost = await Post.update({body: post}, {
+            where: {
+                id: postid
+            }
+        });
+        res.json(updatedpost);
+    } catch (err) {
+        console.error(err.message)
+    }
+});
+
+//deletes a post based on the given id
+server.delete('/openapi/posts/:id', async(req, res) => {
+    try {
+        console.log("delete a post request");
+        const { postid } = req.params;
+        await Post.destroy({
+            where: {
+                id: postid
+            }
+        });
+        res.json(200);
+    } catch (err) {
+        console.error(err.message)
+    }
+});
 
 // TODO: see openapi docs
