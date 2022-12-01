@@ -140,7 +140,7 @@ server.delete('/posts/', async(req, res) => {
 });
 
 //finds a post based on the given id
-server.get('/posts/{PostId}', async(req, res) => {
+server.get('/posts/posts/:id', async(req, res) => {
     try {
         console.log("post with route parameter request");
         const { postid } = req.params;
@@ -156,7 +156,7 @@ server.get('/posts/{PostId}', async(req, res) => {
 });
 
 //refreshes a post
-server.patch('/posts/{PostId}', async(req, res) => {
+server.patch('/posts/:id', async(req, res) => {
     try {
         console.log("post update request");
         const { postid } = req.params;
@@ -173,7 +173,7 @@ server.patch('/posts/{PostId}', async(req, res) => {
 });
 
 //deletes a post based on the given id
-server.delete('/posts/{PostId}', async(req, res) => {
+server.delete('/posts/:id', async(req, res) => {
     try {
         console.log("delete a post request");
         const { postid } = req.params;
