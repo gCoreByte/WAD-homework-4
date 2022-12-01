@@ -15,7 +15,7 @@ const posts = ref([]);
 
 // Gets posts from the API.
 const getData = async () => {
-  const res = await fetch("http://localhost:8080/posts", {
+  const res = await fetch("http://localhost:8000/posts", {
     credentials: 'include'
   });
   // Something went wrong, probably not authenticated. Redirect to login page.

@@ -4,7 +4,7 @@ import {Sequelize, where} from "sequelize";
 // Initialize helper library
 import useBcrypt  from 'sequelize-bcrypt';
 
-export const sequelize = new Sequelize('postgres://wad:123@localhost:5432/vagavaheteiole')
+export const sequelize = new Sequelize('postgres://postgres:123@localhost:5432/vagavaheteiole')
 try {
     await sequelize.authenticate();
     console.log('Connected to database successfully!');
@@ -46,7 +46,7 @@ const port = 8000; // Changing this also requires changing the frontend config
 const server = express();
 
 // Config
-server.use(cors( { origin: '*', credentials: true }));
+server.use(cors( { origin: 'http://localhost:5173', credentials: true }));
 server.use(express.json());
 server.use(cookieParser());
 
@@ -140,13 +140,13 @@ server.delete('/posts/', async(req, res) => {
 });
 
 //finds a post based on the given id
-server.get('/posts/posts/:id', async(req, res) => {
+server.get('/posts/:id', async(req, res) => {
     try {
         console.log("post with route parameter request");
-        const { postid } = req.params;
+        const postId = req.params['id'];
         const post = await Post.findOne({
             where: {
-                id: postid
+                id: postId
             }
         });
         res.json(post);
@@ -159,14 +159,18 @@ server.get('/posts/posts/:id', async(req, res) => {
 server.patch('/posts/:id', async(req, res) => {
     try {
         console.log("post update request");
-        const { postid } = req.params;
-        const post = req.body.body; //?
-        const updatedpost = await Post.update({body: post}, {
-            where: {
-                id: postid
-            }
-        });
-        res.json(updatedpost);
+        const postId = req.params['id'];
+        const postBody = req.body.body;
+        const targetPost = await Post.findByPk(postId);
+        if (targetPost === null) {
+            res.status(404).json({
+                status: 404,
+                message: 'Not found',
+                errors: [`Post with id ${postId} does not exist.`]
+            });
+        }
+        await targetPost.update({ body: postBody });
+        res.json(targetPost);
     } catch (err) {
         console.error(err.message)
     }

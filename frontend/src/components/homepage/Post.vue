@@ -37,7 +37,7 @@ const dateTime = new Date(props.time);
 formattedTime.value = dateTime.toLocaleString();
 
 const updateValue = async (newValue) => {
-  const res = await fetch(`http://localhost:8080/posts/${props.id}`, {
+  const res = await fetch(`http://localhost:8000/posts/${props.id}`, {
     method: 'PATCH',
     credentials: 'include',
     body: JSON.stringify({
