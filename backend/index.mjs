@@ -1,10 +1,26 @@
+// dotenv config
+import * as dotenv from 'dotenv'
+dotenv.config();
+
 // Initialize sequelize, which is the ORM we are using to avoid having to write plain SQL queries
 import {Sequelize, where} from "sequelize";
 
 // Initialize helper library
 import useBcrypt  from 'sequelize-bcrypt';
 
-export const sequelize = new Sequelize('postgres://postgres:123@localhost:5432/vagavaheteiole')
+// Database info
+const databaseName = process.env.DATABASE_NAME || "wad_homework_4";
+const databaseUsername = process.env.DATABASE_USERNAME || "postgres";
+const databasePassword = process.env.DATABASE_PASSWORD || "";
+const databaseHost = process.env.DATABASE_HOST || "localhost";
+const databaseDialect = process.env.DATABASE_DIALECT || "postgres";
+
+const sequelize = new Sequelize(
+    databaseName, databaseUsername, databasePassword, {
+        host: databaseHost,
+        dialect: databaseDialect
+    }
+)
 try {
     await sequelize.authenticate();
     console.log('Connected to database successfully!');

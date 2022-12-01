@@ -4,3 +4,5 @@ backend/package-lock.json
 .idea
 
 */.vscode
+
+*/*.env
