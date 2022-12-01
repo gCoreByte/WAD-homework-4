@@ -4,13 +4,18 @@
     <br>
     <div class="text-justify text-center"> {{ body }}</div>
   </div>
+  <!-- show modal -->
   <Teleport to="body">
     <postModal :show="showModal" @close="showModal = false">
       <template #time>
-        {{formattedTime}}
+        <div class="col-sm-13">
+          <input disabled type="text" class="form-control border border-secondary" id="time" :value="formattedTime">
+        </div>
       </template>
       <template #body>
-        {{body}}
+        <div class="col-sm-13">
+          <textarea type="text" class="form-control text-break border border-secondary" id="body" :value="body"></textarea>
+        </div>
       </template>
     </postModal>
   </Teleport>
@@ -38,5 +43,4 @@ formattedTime.value = dateTime.toLocaleString();
 </script>
 
 <style scoped>
-
 </style>

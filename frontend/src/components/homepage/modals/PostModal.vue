@@ -4,17 +4,22 @@
       <div class="modal-wrapper">
         <div class="modal-container">
           <div class="modal-header">
-            <slot name="header">A post</slot>
+            <h3>A post</h3>
           </div>
 
           <div class="modal-body">
-            <slot name="time">No time specified.</slot>
-            <slot name="body">No body specified.</slot>
+            <div>
+              <label for="time" class="form-label mb-3">Time:</label>
+              <slot name="time">No time specified.</slot>
+            </div>
+            <div class="mt-3">
+              <label for="body" class="form-label mb-3">Body:</label>
+              <slot name="body">No body specified.</slot>
+            </div>
           </div>
 
           <div class="modal-footer">
             <slot name="footer">
-              default footer
               <button
                   class="modal-default-button"
                   @click="$emit('close')"
@@ -35,7 +40,7 @@
   );
 </script>
 
-<style scoped>
+<style>
 
 .modal-mask {
   position: fixed;
