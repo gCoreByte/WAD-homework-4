@@ -67,7 +67,7 @@ server.listen(port, () => {
 // Routes
 
 //Login as a user
-server.post('/posts', async(req, res) => {
+server.post('/auth/login/', async(req, res) => {
     try {
         console.log("login request");
         const useremail = req.body.email;
@@ -94,7 +94,7 @@ server.post('/posts', async(req, res) => {
 });
 
 //Register a user
-server.post('/posts', async(req, res) => {
+server.post('/auth/signup/', async(req, res) => {
     try {
         const e = req.body.email;
         const pw = req.body.password;
@@ -106,7 +106,7 @@ server.post('/posts', async(req, res) => {
 });
 
 //creates a new post
-server.post('/posts', async(req, res) => {
+server.post('/posts/', async(req, res) => {
     try {
         console.log("post request");
         const  post = req.body.body;
@@ -118,7 +118,7 @@ server.post('/posts', async(req, res) => {
 });
 
 //gets all posts
-server.get('/openapi/posts', async(req, res) => {
+server.get('/posts/', async(req, res) => {
     try {
         console.log("post request");
         const posts = await Post.findAll();
@@ -129,7 +129,7 @@ server.get('/openapi/posts', async(req, res) => {
 });
 
 //deletes all posts
-server.delete('/openapi/posts', async(req, res) => {
+server.delete('/posts/', async(req, res) => {
     try {
         console.log("delete posts request");
         await Post.destroy()
@@ -140,7 +140,7 @@ server.delete('/openapi/posts', async(req, res) => {
 });
 
 //finds a post based on the given id
-server.get('/openapi/posts/:id', async(req, res) => {
+server.get('/posts/{PostId}', async(req, res) => {
     try {
         console.log("post with route parameter request");
         const { postid } = req.params;
@@ -156,7 +156,7 @@ server.get('/openapi/posts/:id', async(req, res) => {
 });
 
 //refreshes a post
-server.patch('/openapi/posts/:id', async(req, res) => {
+server.patch('/posts/{PostId}', async(req, res) => {
     try {
         console.log("post update request");
         const { postid } = req.params;
@@ -173,7 +173,7 @@ server.patch('/openapi/posts/:id', async(req, res) => {
 });
 
 //deletes a post based on the given id
-server.delete('/openapi/posts/:id', async(req, res) => {
+server.delete('/posts/{PostId}', async(req, res) => {
     try {
         console.log("delete a post request");
         const { postid } = req.params;
