@@ -58,7 +58,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 
-const port = 8000; // Changing this also requires changing the frontend config
+const port = process.env.PORT || 8000; // Changing this also requires changing the frontend config
 const server = express();
 
 // Config
@@ -77,7 +77,7 @@ const generateJWT = (id) => {
 
 // Set up the server
 server.listen(port, () => {
-    console.log(`Server is listening on port {port}.`);
+    console.log(`Server is listening on port ${port}.`);
 });
 
 // Routes
@@ -207,5 +207,3 @@ server.delete('/posts/:id', async(req, res) => {
         console.error(err.message)
     }
 });
-
-// TODO: see openapi docs
