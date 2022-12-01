@@ -8,7 +8,7 @@
 
 <script setup>
 import Post from '../components/homepage/Post.vue'
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 //import AddPost from "../components/homepage/AddPost";
 //import DeleteAll from "../components/homepage/DeleteAll";
 
@@ -16,7 +16,7 @@ const posts = ref([]);
 
 // Gets posts from the API.
 const getData = async () => {
-  const res = await fetch("https://localhost:8000/api/v1/posts", {
+  const res = await fetch("https://localhost:8000/posts", {
     credentials: 'include'
   });
   // Something went wrong, probably not authenticated. Redirect to login page.
@@ -25,6 +25,10 @@ const getData = async () => {
   }
   posts.value.concat(await res.json());
 }
+
+onMounted(() => {
+  getData();
+})
 
 </script>
 
