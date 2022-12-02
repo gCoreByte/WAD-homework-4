@@ -125,9 +125,9 @@ server.post('/auth/signup/', async(req, res) => {
 server.post('/posts/', async(req, res) => {
     try {
         console.log("post request");
-        const  post = req.body.body;
-        const newpost = await Post.create({body: post});
-        res.json(newpost);
+        const postBody = req.body.body;
+        const newPost = await Post.create({body: postBody});
+        res.json(newPost);
     } catch (err) {
         console.error(err.message)
     }
@@ -137,7 +137,9 @@ server.post('/posts/', async(req, res) => {
 server.get('/posts/', async(req, res) => {
     try {
         console.log("post request");
-        const posts = await Post.findAll();
+        const posts = await Post.findAll({
+            order: [['createdAt', 'ASC']]
+        });
         res.json(posts);
     } catch (err) {
         console.error(err.message)
