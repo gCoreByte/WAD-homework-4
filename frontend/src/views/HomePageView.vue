@@ -1,7 +1,14 @@
 <template>
   <div class="mx-auto" style="width: 50%">
     <Post v-for="post in posts" :body="post.body" :time="post.createdAt" :id="post.id" :key="post.id"></Post>
-    <AddPost @click="newModal = true"></AddPost>
+    <div class="row">
+      <div class="col">
+        <AddPost class="float-end" @click="newModal = true"></AddPost>
+      </div>
+      <div class="col">
+        <DeleteAll></DeleteAll>
+      </div>
+    </div>
   </div>
   <!-- new modal -->
   <Teleport to="body">
@@ -12,11 +19,11 @@
 
 <script setup>
 import Post from '../components/homepage/Post.vue'
-import {onMounted, ref} from "vue";
+import {ref} from "vue";
 import router from "../router";
 import NewModal from "../components/homepage/modals/NewModal.vue"
 import AddPost from "../components/homepage/AddPost.vue";
-//import DeleteAll from "../components/homepage/DeleteAll";
+import DeleteAll from "../components/homepage/DeleteAll.vue";
 
 const newModal = ref(false);
 

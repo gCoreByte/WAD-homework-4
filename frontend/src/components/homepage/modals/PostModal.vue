@@ -22,12 +22,12 @@
 
           <div class="modal-footer row gx-1">
               <button
-                  class="col"
+                  class="btn btn-secondary col"
                   @click="$emit('updateValue', bodyRef)"
               >Update</button>
             <div class="col"></div>
             <button
-                class="col"
+                class="btn btn-danger col"
                 @click="$emit('delete')"
             >Delete</button>
           </div>
