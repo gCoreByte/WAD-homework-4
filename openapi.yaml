@@ -3,7 +3,7 @@ info:
   title: Backend API
   version: 1.0.0
 servers:
-  - url: 127.0.0.1:8000/api/v1/
+  - url: 127.0.0.1:8080/
 tags:
   - name: authentication
   - name: posts

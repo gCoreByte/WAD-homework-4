@@ -1,6 +1,8 @@
-backend/node_modules
-backend/package-lock.json
+*/node_modules
+*/package-lock.json
 
 .idea
 
 */.vscode
+
+*/*.env

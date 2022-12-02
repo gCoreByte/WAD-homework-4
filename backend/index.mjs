@@ -1,10 +1,26 @@
+// dotenv config
+import * as dotenv from 'dotenv'
+dotenv.config();
+
 // Initialize sequelize, which is the ORM we are using to avoid having to write plain SQL queries
-import { Sequelize } from "sequelize";
+import {Sequelize, where} from "sequelize";
 
 // Initialize helper library
-import { useBcrypt } from 'sequelize-bcrypt';
+import useBcrypt  from 'sequelize-bcrypt';
 
-export const sequelize = new Sequelize('postgres://postgres:@localhost:5432/')
+// Database info
+const databaseName = process.env.DATABASE_NAME || "wad_homework_4";
+const databaseUsername = process.env.DATABASE_USERNAME || "postgres";
+const databasePassword = process.env.DATABASE_PASSWORD || "";
+const databaseHost = process.env.DATABASE_HOST || "localhost";
+const databaseDialect = process.env.DATABASE_DIALECT || "postgres";
+
+const sequelize = new Sequelize(
+    databaseName, databaseUsername, databasePassword, {
+        host: databaseHost,
+        dialect: databaseDialect
+    }
+)
 try {
     await sequelize.authenticate();
     console.log('Connected to database successfully!');
@@ -42,11 +58,11 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 
-const port = 8000; // Changing this also requires changing the frontend config
+const port = process.env.PORT || 8000; // Changing this also requires changing the frontend config
 const server = express();
 
 // Config
-server.use(cors( { origin: '*', credentials: true }));
+server.use(cors( { origin: 'http://localhost:5173', credentials: true }));
 server.use(express.json());
 server.use(cookieParser());
 
@@ -59,11 +75,136 @@ const generateJWT = (id) => {
     return jwt.sign( { id }, secret, { expiresIn: maxAge } );
 }
 
-// Setup the server
+// Set up the server
 server.listen(port, () => {
-    console.log(`Server is listening on port {port}.`);
+    console.log(`Server is listening on port ${port}.`);
 });
 
 // Routes
 
-// TODO: see openapi docs
+//Login as a user
+server.post('/auth/login/', async(req, res) => {
+    try {
+        console.log("login request");
+        const useremail = req.body.email;
+        const user = await User.findOne({
+            where: {
+                email: useremail
+            }
+        });
+
+        if (await user.authenticate(req.body.password)){
+            const token = await generateJWT(user.id);
+            res
+                .status(201)
+                .cookie('jwt', token, { maxAge: 6000000, httpOnly: true })
+                .json({ user_id: user.id })
+                .send;
+        } else {
+            console.error("Wrong password")
+            res.status(401)
+        }
+    } catch (err) {
+        console.error(err.message)
+    }
+});
+
+//Register a user
+server.post('/auth/signup/', async(req, res) => {
+    try {
+        const e = req.body.email;
+        const pw = req.body.password;
+        await User.create({email: e, password: pw})
+        res.json(200);
+    } catch (err) {
+        console.error(err.message)
+    }
+});
+
+//creates a new post
+server.post('/posts/', async(req, res) => {
+    try {
+        console.log("post request");
+        const postBody = req.body.body;
+        const newPost = await Post.create({body: postBody});
+        res.json(newPost);
+    } catch (err) {
+        console.error(err.message)
+    }
+});
+
+//gets all posts
+server.get('/posts/', async(req, res) => {
+    try {
+        console.log("post request");
+        const posts = await Post.findAll({
+            order: [['createdAt', 'ASC']]
+        });
+        res.json(posts);
+    } catch (err) {
+        console.error(err.message)
+    }
+});
+
+//deletes all posts
+server.delete('/posts/', async(req, res) => {
+    try {
+        console.log("delete posts request");
+        await Post.destroy({truncate: true});
+        res.json(200);
+    } catch (err) {
+        console.error(err.message)
+    }
+});
+
+//finds a post based on the given id
+server.get('/posts/:id', async(req, res) => {
+    try {
+        console.log("post with route parameter request");
+        const postId = req.params['id'];
+        const targetPost = await Post.findByPk(postId);
+        res.json(targetPost);
+    } catch (err) {
+        console.error(err.message)
+    }
+});
+
+//refreshes a post
+server.patch('/posts/:id', async(req, res) => {
+    try {
+        console.log("post update request");
+        const postId = req.params['id'];
+        const postBody = req.body.body;
+        const targetPost = await Post.findByPk(postId);
+        if (targetPost === null) {
+            res.status(404).json({
+                status: 404,
+                message: 'Not found'
+            });
+        }
+        await targetPost.update({ body: postBody });
+        res.json(targetPost);
+    } catch (err) {
+        console.error(err.message)
+    }
+});
+
+//deletes a post based on the given id
+server.delete('/posts/:id', async(req, res) => {
+    try {
+        console.log("DELETE Post request");
+        const postId = req.params['id'];
+        const postBody = req.body.body;
+        const targetPost = await Post.findByPk(postId);
+        if (targetPost === null) {
+            res.status(404).json({
+                status: 404,
+                message: 'Not found'
+            });
+        }
+        await targetPost.destroy();
+        res.json(204);
+    } catch (err) {
+        console.error(err.message)
+    }
+});
