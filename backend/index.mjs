@@ -150,7 +150,7 @@ server.get('/posts/', async(req, res) => {
 server.delete('/posts/', async(req, res) => {
     try {
         console.log("delete posts request");
-        await Post.destroy()
+        await Post.destroy({truncate: true});
         res.json(200);
     } catch (err) {
         console.error(err.message)
