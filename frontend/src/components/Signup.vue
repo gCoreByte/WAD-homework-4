@@ -1,11 +1,31 @@
-<template>
+<!-- eslint-disable prettier/prettier -->
 
+<template>
+  <div class="container-sm w-25 mt-5">
+    <form>
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Email address</label>
+        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+        <!--<div id="emailHelp" class="form-text">Must be a valid e-mail.</div>-->
+      </div>
+      <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Password</label>
+        <input type="password" class="form-control" id="exampleInputPassword1">
+        <div id="passwordHelp" class="form-text">Make it a strong one.</div>
+      </div>
+      <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+        <label class="form-check-label" for="exampleCheck1"> I accept the terms and conditions</label>
+      </div>
+      <button type="submit" class="btn btn-primary">Sign up</button>
+    </form>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "Signup"
-}
+  name: "Signup",
+};
 </script>
 
 <style scoped>
