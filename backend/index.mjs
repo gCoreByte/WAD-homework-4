@@ -109,7 +109,7 @@ server.post('/auth/login/', async(req, res) => {
     }
 });
 
-//Register a user
+//Signup a user
 server.post('/auth/signup/', async(req, res) => {
     try {
         const e = req.body.email;
