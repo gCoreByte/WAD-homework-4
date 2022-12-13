@@ -14,7 +14,7 @@
       </div>
       <div class="mb-3 form-check">
         <input type="checkbox" class="form-check-input" id="checkbox" required v-model="checkbox">
-        <label class="form-check-label" for="checkbox"> I accept the terms and conditions.</label>
+        <label class="check-label" for="checkbox"> I accept the terms and conditions.</label>
       </div>
       <button @click=signUp class="btn btn-secondary">Sign up</button>
   </div>
@@ -47,7 +47,7 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           console.log(data);
-          this.$router.push("/login");
+          //this.$router.push("/login");
           location.assign("/login");
         })
         .catch((e) => {
