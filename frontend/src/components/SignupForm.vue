@@ -1,7 +1,7 @@
 <!-- eslint-disable prettier/prettier -->
 
 <template>
-  <div class="container-sm w-25 mt-5">
+  <div class="mx-auto" style="width: 30%">
     <form>
       <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">Email address</label>
