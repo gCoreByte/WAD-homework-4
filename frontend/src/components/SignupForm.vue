@@ -18,29 +18,11 @@
         <input type="checkbox" class="form-check-input" id="exampleCheck1">
         <label class="form-check-label" for="exampleCheck1"> I accept the terms and conditions</label>
       </div>
-      <button type="submit" class="btn btn-primary" @click="registerUser">Sign up</button>
+      <button type="submit" class="btn btn-primary">Sign up</button>
     </form>
   </div>
 </template>
 
-<script setup>
-
-import router from "../router";
-
-const registerUser = async () => {
-
-  const res = await fetch('http://localhost:8000/auth/signup/', {
-    method:'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  });
-
-  await router.push('/login');}
+<script>
 
 </script>
-
-<style scoped>
-
-</style>

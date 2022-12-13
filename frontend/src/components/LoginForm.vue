@@ -13,10 +13,10 @@
 
         <div class="row align-items-center">
           <div class="col">
-            <button type="submit" class="btn btn-secondary" v-on:click="loginUser">Login</button>
+            <button type="submit" class="btn btn-secondary">Login</button>
           </div>
           <div class="col">
-            <button type="button" class="btn btn-outline-secondary" v-on:click="toSignup">Sign up</button>
+            <button type="button" class="btn btn-outline-secondary">Sign up</button>
           </div>
         </div>
       </form>
@@ -24,28 +24,6 @@
   
   </template>
   
-  <script setup>
-
-  import router from "../router";
-
-  const loginUser = async () => {
-
-    const res = await fetch('http://localhost:8000/auth/signup/', {
-      method:'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    await router.push('/');}
-
-  const toSignup = async () => {
-    await router.push('/signup');
-  }
+  <script>
 
   </script>
-  
-  <style scoped>
-  
-  </style>
