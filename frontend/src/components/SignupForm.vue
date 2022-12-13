@@ -1,23 +1,25 @@
 <!-- eslint-disable prettier/prettier -->
 
 <template>
-  <div class="mx-auto" style="width: 30%">
-    <div class="mb-3">
-      <label for="email" class="form-label">Email address</label>
-      <input type="email" class="form-control needs-validation" id="email" aria-describedby="emailHelp" required
-        v-model="email">
-      <div id="emailHelp" class="form-text">Must be a valid e-mail.</div>
+  <form @submit.stop.prevent=signUp class="needs-validation">
+    <div class="mx-auto" style="width: 30%">
+      <div class="mb-3">
+        <label for="email" class="form-label">Email address</label>
+        <input type="email" class="form-control" id="email" aria-describedby="emailHelp" required
+          v-model="email">
+        <div id="emailHelp" class="form-text">Must be a valid e-mail.</div>
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" required v-model="password">
+      </div>
+      <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="checkbox" required v-model="checkbox">
+        <label class="check-label" for="checkbox"> I accept the terms and conditions.</label>
+      </div>
+      <button type="submit" class="btn btn-secondary">Sign up</button>
     </div>
-    <div class="mb-3">
-      <label for="password" class="form-label">Password</label>
-      <input type="password" class="form-control" id="password" required v-model="password">
-    </div>
-    <div class="mb-3 form-check">
-      <input type="checkbox" class="form-check-input" id="checkbox" required v-model="checkbox">
-      <label class="check-label" for="checkbox"> I accept the terms and conditions.</label>
-    </div>
-    <button @click=signUp class="btn btn-secondary">Sign up</button>
-  </div>
+  </form>
 </template>
 
 <script>
@@ -32,7 +34,8 @@ export default {
   },
   methods: {
     signUp() {
-      var data = {
+
+      let data = {
         email: this.email,
         password: this.password
       };
