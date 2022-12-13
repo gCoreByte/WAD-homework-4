@@ -1,23 +1,23 @@
 <!-- eslint-disable prettier/prettier -->
 
 <template>
-  <form class="needs-validation mx-auto" style="width: 30%" novalidate>
-      <div class="mb-3">
-        <label for="email" class="form-label">Email address</label>
-        <input type="email" class="form-control needs-validation" id="email" aria-describedby="emailHelp" required
-          v-model="email">
-        <div id="emailHelp" class="form-text">Must be a valid e-mail.</div>
-      </div>
-      <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" class="form-control" id="password" required v-model="password">
-      </div>
-      <div class="mb-3 form-check">
-        <input type="checkbox" class="form-check-input" id="checkbox" required v-model="checkbox">
-        <label class="check-label" for="checkbox"> I accept the terms and conditions.</label>
-      </div>
-      <button type="submit" @click=signUp class="btn btn-secondary">Sign up</button>
-  </form>
+  <div class="mx-auto" style="width: 30%">
+    <div class="mb-3">
+      <label for="email" class="form-label">Email address</label>
+      <input type="email" class="form-control needs-validation" id="email" aria-describedby="emailHelp" required
+        v-model="email">
+      <div id="emailHelp" class="form-text">Must be a valid e-mail.</div>
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input type="password" class="form-control" id="password" required v-model="password">
+    </div>
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" id="checkbox" required v-model="checkbox">
+      <label class="check-label" for="checkbox"> I accept the terms and conditions.</label>
+    </div>
+    <button @click=signUp class="btn btn-secondary">Sign up</button>
+  </div>
 </template>
 
 <script>
@@ -36,8 +36,7 @@ export default {
         email: this.email,
         password: this.password
       };
-      // using Fetch - post method - send an HTTP post request to the specified URI with the defined body
-      fetch("http://localhost:8000/auth/signup/", {
+      fetch("http://localhost:8000/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,7 +46,6 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           console.log(data);
-          //this.$router.push("/login");
           location.assign("/");
         })
         .catch((e) => {
