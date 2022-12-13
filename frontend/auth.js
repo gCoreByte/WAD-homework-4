@@ -1,7 +1,7 @@
 export default {
     user: { authenticated: false },
     authenticated: async function() {
-        await fetch("http://localhost:3000/auth/authenticate", {
+        await fetch("http://localhost:8000/auth/authenticate", {
             credentials: 'include',
         })
             .then((response) => response.json())

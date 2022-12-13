@@ -82,6 +82,35 @@ server.listen(port, () => {
 
 // Routes
 
+server.get('/auth/authenticate', async(req, res) => {
+    const token = req.cookies.jwt; // assign the token named jwt to the token const
+    console.log('Trying to auth ', token);
+    let authenticated = false; // a user is not authenticated until proven the opposite
+    try {
+        if (token) { //checks if the token exists
+            //jwt.verify(token, secretOrPublicKey, [options, callback])
+            await jwt.verify(token, secret, (err) => { //token exists, now we try to verify it
+                if (err) { // not verified, redirect to login page
+                    console.log(err.message);
+                    console.log('token is not verified');
+                    res.send({ "authenticated": authenticated }); // authenticated = false
+                } else { // token exists and it is verified 
+                    console.log('author is authinticated');
+                    authenticated = true;
+                    res.send({ "authenticated": authenticated }); // authenticated = true
+                }
+            })
+        } else { //applies when the token does not exist
+            console.log('author is not authinticated');
+            res.send({ "authenticated": authenticated }); // authenticated = false
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(400).send(err.message);
+    }
+});
+
+
 //Login as a user
 server.post('/auth/login/', async(req, res) => {
     try {
@@ -92,7 +121,10 @@ server.post('/auth/login/', async(req, res) => {
                 email: useremail
             }
         });
-
+        
+        if (user == null) {
+            res.status(401);
+        }
         if (await user.authenticate(req.body.password)){
             const token = await generateJWT(user.id);
             res
@@ -208,4 +240,11 @@ server.delete('/posts/:id', async(req, res) => {
     } catch (err) {
         console.error(err.message)
     }
+});
+
+
+//logout a user
+server.get('/auth/logout', (req, res) => {
+    console.log('logout request');
+    res.status(202).clearCookie('jwt').json({ "Msg": "cookie cleared" }).send;
 });

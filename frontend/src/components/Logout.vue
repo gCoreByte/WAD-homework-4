@@ -20,7 +20,7 @@ export default {
 
   methods: {
     Logout() {
-      fetch("http://localhost:3000/auth/logout", {
+      fetch("http://localhost:8000/auth/logout", {
         credentials: 'include',
       })
           .then((response) => response.json())
