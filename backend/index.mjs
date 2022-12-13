@@ -117,6 +117,7 @@ server.post('/auth/signup/', async(req, res) => {
         await User.create({email: e, password: pw})
         res.json(200);
     } catch (err) {
+        res.json(402)
         console.error(err.message)
     }
 });

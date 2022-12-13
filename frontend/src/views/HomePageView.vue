@@ -50,7 +50,3 @@ getData();
 
 
 </script>
-
-<style scoped>
-
-</style>
