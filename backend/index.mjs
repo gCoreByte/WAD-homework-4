@@ -91,7 +91,7 @@ server.get('/auth/authenticate', async(req, res) => {
             await jwt.verify(token, secret, (err) => {
                 if (err) {
                     console.log('Auth error: ', err.message, token);
-                    res.send({ "authenticated": authenticated });
+                    res.status(400).clearCookie('jwt').json({ "Msg": "cookie cleared", "authenticated": authenticated }).send;
                 } else { 
                     authenticated = true;
                     res.send({ "authenticated": authenticated });
@@ -142,10 +142,16 @@ server.post('/auth/signup/', async(req, res) => {
     try {
         const e = req.body.email;
         const pw = req.body.password;
-        await User.create({email: e, password: pw})
-        res.json(200);
+        const user = await User.create({email: e, password: pw});
+        console.log(user.id);
+        const token = await generateJWT(user.id);
+        res
+            .status(201)
+            .cookie('jwt', token, { maxAge: 6000000, httpOnly: true })
+            .json({ user_id: user.id })
+            .send;
     } catch (err) {
-        res.json(402)
+        res.status(402)
         console.error(err.message)
     }
 });
