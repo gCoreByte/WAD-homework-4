@@ -1,7 +1,7 @@
 <template>
   <div @click="showModal = true" class="post">
-    <div class="text-end text-margin">{{formattedTime}}</div>
-    <div class="text-justify text-margin"> {{ bodyRef }}</div>
+    <div class="text-end text-margin p-2">{{formattedTime}}</div>
+    <div class="text-justify text-margin text-break p-3"> {{ bodyRef }}</div>
   </div>
   <!-- show modal -->
   <Teleport to="body">
@@ -90,16 +90,12 @@ const deletePost = async () => {
   @import "../node_modules/bootstrap/scss/bootstrap";
 
   .post {
-    margin-top: 25px;
+    margin-top: 10px;
     @extend .bg-dark;
     @extend .text-light;
     width: 50vw;
     display: block;
-    margin-bottom: 25px;
+    margin-bottom: 10px;
     border-radius: 10px;
-  }
-
-  .text-margin {
-    margin: 25px;
   }
 </style>

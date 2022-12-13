@@ -82,6 +82,31 @@ server.listen(port, () => {
 
 // Routes
 
+server.get('/auth/authenticate', async(req, res) => {
+    const token = req.cookies.jwt;
+    console.log('Trying to auth ', token);
+    let authenticated = false;
+    try {
+        if (token) {
+            await jwt.verify(token, secret, (err) => {
+                if (err) {
+                    console.log('Auth error: ', err.message, token);
+                    res.send({ "authenticated": authenticated });
+                } else { 
+                    authenticated = true;
+                    res.send({ "authenticated": authenticated });
+                }
+            })
+        } else {
+            res.send({ "authenticated": authenticated });
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(400).send(err.message);
+    }
+});
+
+
 //Login as a user
 server.post('/auth/login/', async(req, res) => {
     try {
@@ -92,7 +117,10 @@ server.post('/auth/login/', async(req, res) => {
                 email: useremail
             }
         });
-
+        
+        if (user == null) {
+            res.status(401);
+        }
         if (await user.authenticate(req.body.password)){
             const token = await generateJWT(user.id);
             res
@@ -109,7 +137,7 @@ server.post('/auth/login/', async(req, res) => {
     }
 });
 
-//Register a user
+//Signup a user
 server.post('/auth/signup/', async(req, res) => {
     try {
         const e = req.body.email;
@@ -117,6 +145,7 @@ server.post('/auth/signup/', async(req, res) => {
         await User.create({email: e, password: pw})
         res.json(200);
     } catch (err) {
+        res.json(402)
         console.error(err.message)
     }
 });
@@ -207,4 +236,11 @@ server.delete('/posts/:id', async(req, res) => {
     } catch (err) {
         console.error(err.message)
     }
+});
+
+
+//logout a user
+server.get('/auth/logout', (req, res) => {
+    console.log('logout request');
+    res.status(202).clearCookie('jwt').json({ "Msg": "cookie cleared" }).send;
 });

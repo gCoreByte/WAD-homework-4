@@ -1,5 +1,8 @@
 <template>
   <div class="mx-auto" style="width: 50%">
+    <div class="container text-center">
+      <LogOut></LogOut>
+    </div>
     <Post v-for="post in posts" :body="post.body" :time="post.createdAt" :id="post.id" :key="post.id"></Post>
     <div class="row">
       <div class="col">
@@ -24,6 +27,7 @@ import router from "../router";
 import NewModal from "../components/homepage/modals/NewModal.vue"
 import AddPost from "../components/homepage/AddPost.vue";
 import DeleteAll from "../components/homepage/DeleteAll.vue";
+import LogOut from "../components/Logout.vue";
 
 const newModal = ref(false);
 
@@ -46,7 +50,3 @@ getData();
 
 
 </script>
-
-<style scoped>
-
-</style>
